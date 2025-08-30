@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Mic, Send, Bot } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { textToSpeech } from "@/ai/flows/text-to-speech";
 
 type Message = {
   id: number;
@@ -34,15 +35,44 @@ export function ChatPanel() {
     }
   ]);
   const [input, setInput] = useState("");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const handleSend = () => {
+  useEffect(() => {
+    // Pre-create the audio element
+    audioRef.current = new Audio();
+  }, []);
+
+  const playAudio = (audioDataUri: string) => {
+    if (audioRef.current) {
+        audioRef.current.src = audioDataUri;
+        audioRef.current.play().catch(e => console.error("Error playing audio:", e));
+    }
+  }
+
+
+  const handleSend = async () => {
     if (input.trim()) {
-      setMessages([...messages, { id: Date.now(), role: "user", content: input }]);
+      const userMessage: Message = { id: Date.now(), role: "user", content: input };
+      setMessages(prev => [...prev, userMessage]);
       setInput("");
+      
+      const thinkingMessage: Message = {id: Date.now() + 1, role: 'assistant', content: 'Thinking...'};
+      setMessages(prev => [...prev, thinkingMessage]);
+
       // Simulate AI response
-      setTimeout(() => {
-        setMessages(prev => [...prev, {id: Date.now() + 1, role: 'assistant', content: 'Thinking...'}])
-      }, 500);
+      setTimeout(async () => {
+        const aiResponseContent = 'This is a simulated response. The real AI logic would go here.';
+        const aiResponseMessage: Message = {...thinkingMessage, content: aiResponseContent};
+        setMessages(prev => prev.map(m => m.id === thinkingMessage.id ? aiResponseMessage : m));
+
+        try {
+            const { audioDataUri } = await textToSpeech({ text: aiResponseContent });
+            playAudio(audioDataUri);
+        } catch (error) {
+            console.error("TTS Error:", error);
+        }
+
+      }, 1000);
     }
   };
 
@@ -64,6 +94,7 @@ export function ChatPanel() {
               >
                 {message.role === "assistant" && (
                    <Avatar className="w-8 h-8 border-2 border-primary/50">
+                    <AvatarImage src="https://picsum.photos/100/100" data-ai-hint="young chinese lady" />
                     <AvatarFallback><Bot className="text-primary"/></AvatarFallback>
                   </Avatar>
                 )}

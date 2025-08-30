@@ -1,23 +1,25 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { Bot, Mic, Move } from 'lucide-react';
+import { Mic, Move } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 export function FloatingAssistant() {
   const [position, setPosition] = useState({ x: 30, y: 30 });
   const [isDragging, setIsDragging] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false); // Start as not visible
   const assistantRef = useRef<HTMLDivElement>(null);
   const dragHandleRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Set initial position based on window size, only on client
+    // Set initial position based on window size and make visible, only on client
     if (typeof window !== 'undefined') {
         setPosition({ x: 30, y: window.innerHeight - 130 });
+        setIsVisible(true);
     }
   }, []);
 
@@ -59,11 +61,29 @@ export function FloatingAssistant() {
   
   // Simulate speaking and listening states
   useEffect(() => {
-    const speakInterval = setInterval(() => setIsSpeaking(sp => !sp), 2000);
-    const listenInterval = setInterval(() => setIsListening(li => !li), 5000);
+    let speakTimeout: NodeJS.Timeout;
+    const scheduleSpeak = () => {
+      speakTimeout = setTimeout(() => {
+        setIsSpeaking(true);
+        setTimeout(() => setIsSpeaking(false), 1500); // Speak for 1.5s
+        scheduleSpeak();
+      }, Math.random() * 5000 + 3000); // every 3-8 seconds
+    }
+    scheduleSpeak();
+    
+    let listenTimeout: NodeJS.Timeout;
+    const scheduleListen = () => {
+        listenTimeout = setTimeout(() => {
+        setIsListening(true);
+        setTimeout(() => setIsListening(false), 2000); // Listen for 2s
+        scheduleListen();
+      }, Math.random() * 8000 + 5000); // every 5-13 seconds
+    }
+    scheduleListen();
+
     return () => {
-      clearInterval(speakInterval);
-      clearInterval(listenInterval);
+      clearTimeout(speakTimeout);
+      clearTimeout(listenTimeout);
     }
   }, []);
   
@@ -78,13 +98,13 @@ export function FloatingAssistant() {
       <div className="relative group">
         <div
           className={cn(
-            "w-24 h-24 rounded-full bg-card border-4 flex items-center justify-center cursor-pointer transition-all duration-300",
+            "w-24 h-24 rounded-full bg-card border-4 flex items-center justify-center cursor-pointer transition-all duration-300 overflow-hidden",
             isListening ? "border-accent [box-shadow:0_0_20px_hsl(var(--accent))]" : "border-primary [box-shadow:0_0_20px_hsl(var(--primary))]",
           )}
         >
-          <Bot className={cn("w-12 h-12 transition-colors", isListening ? "text-accent" : "text-primary")} />
+          <Image src="https://picsum.photos/100/100" width={96} height={96} alt="Rebecca AI Assistant" data-ai-hint="young chinese lady" className="w-full h-full object-cover"/>
           <div className={cn(
-            "absolute bottom-5 w-6 h-1 bg-foreground rounded-full transition-all duration-100",
+            "absolute bottom-5 w-6 h-1 bg-foreground/80 rounded-full transition-all duration-100",
             isSpeaking ? "h-4" : "h-1"
           )}
             style={{transitionTimingFunction: 'cubic-bezier(0.8, 0, 0.2, 1)'}}
