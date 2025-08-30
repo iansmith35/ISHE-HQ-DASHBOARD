@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -23,6 +24,7 @@ import {
   Vault,
   ChevronsLeft,
   ChevronsRight,
+  Image as ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -38,6 +40,7 @@ const menuItems = [
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/jobs", label: "Jobs", icon: Briefcase },
   { href: "/vault", label: "Vault", icon: Vault },
+  { href: "/media", label: "Media", icon: ImageIcon },
   { href: "/conversations", label: "Conversations", icon: MessageSquare },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -18,17 +19,29 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 
-const mockFiles = [
+export type UploadedFile = {
+  id: number;
+  name: string;
+  type: 'pdf' | 'image' | string;
+  tags: string[];
+  date: string;
+};
+
+const mockFiles: UploadedFile[] = [
   { id: 1, name: "Gas_Safety_Cert_2023.pdf", type: "pdf", tags: ["certificate", "gas", "2023"], date: "2023-10-15" },
   { id: 2, name: "Boiler_Manual.pdf", type: "pdf", tags: ["manual", "boiler"], date: "2023-09-22" },
   { id: 3, name: "Leaky_pipe_photo.jpg", type: "image", tags: ["photo", "leak", "job-003"], date: "2023-11-01" },
   { id: 4, name: "TV_Licence.pdf", type: "pdf", tags: ["personal", "licence"], date: "2023-01-05" },
 ];
 
-export function FileTable() {
+type FileTableProps = {
+    files: UploadedFile[];
+}
+
+export function FileTable({ files }: FileTableProps) {
     const getFileIcon = (type: string) => {
-        if (type === 'pdf') return <FileText className="h-5 w-5 text-muted-foreground" />;
-        if (type === 'image') return <ImageIcon className="h-5 w-5 text-muted-foreground" />;
+        if (type === 'pdf' || type === 'application/pdf') return <FileText className="h-5 w-5 text-muted-foreground" />;
+        if (type.startsWith('image')) return <ImageIcon className="h-5 w-5 text-muted-foreground" />;
         return <FileText className="h-5 w-5 text-muted-foreground" />;
     }
   return (
@@ -44,7 +57,14 @@ export function FileTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {mockFiles.map((file) => (
+            {files.length === 0 && (
+                <TableRow>
+                    <TableCell colSpan={4} className="h-24 text-center">
+                        No files uploaded yet.
+                    </TableCell>
+                </TableRow>
+            )}
+          {files.map((file) => (
             <TableRow key={file.id}>
               <TableCell className="font-medium">
                 <div className="flex items-center gap-2">
@@ -82,3 +102,4 @@ export function FileTable() {
     </div>
   );
 }
+

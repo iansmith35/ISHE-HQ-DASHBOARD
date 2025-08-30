@@ -1,14 +1,16 @@
+
 "use client";
 
 import { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mic, Send, Bot } from "lucide-react";
+import { Mic, Send, Bot, Square } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { textToSpeech } from "@/ai/flows/text-to-speech";
+import { useToast } from "@/hooks/use-toast";
 
 type Message = {
   id: number;
@@ -35,7 +37,10 @@ export function ChatPanel() {
     }
   ]);
   const [input, setInput] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Pre-create the audio element
@@ -74,6 +79,65 @@ export function ChatPanel() {
 
       }, 1000);
     }
+  };
+
+  const handleMicClick = () => {
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast({
+        variant: "destructive",
+        title: "Browser not supported",
+        description: "Speech recognition is not supported by your browser.",
+      });
+      return;
+    }
+
+    recognitionRef.current = new SpeechRecognition();
+    recognitionRef.current.continuous = false;
+    recognitionRef.current.interimResults = true;
+    recognitionRef.current.lang = 'en-US';
+
+    recognitionRef.current.onstart = () => {
+      setIsRecording(true);
+    };
+
+    recognitionRef.current.onend = () => {
+      setIsRecording(false);
+    };
+
+    recognitionRef.current.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      toast({
+        variant: "destructive",
+        title: "Speech Recognition Error",
+        description: `An error occurred: ${event.error}`,
+      });
+      setIsRecording(false);
+    };
+    
+    let finalTranscript = '';
+    recognitionRef.current.onresult = (event) => {
+      let interimTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+      setInput(finalTranscript + interimTranscript);
+       if (event.results[event.results.length - 1].isFinal) {
+        setTimeout(() => handleSend(), 500); // Send automatically after a short delay
+      }
+    };
+
+    recognitionRef.current.start();
   };
 
   return (
@@ -129,8 +193,8 @@ export function ChatPanel() {
             className="pr-20"
           />
           <div className="absolute inset-y-0 right-0 flex items-center">
-            <Button variant="ghost" size="icon" aria-label="Use microphone">
-              <Mic className="h-5 w-5 text-muted-foreground hover:text-primary" />
+            <Button variant="ghost" size="icon" onClick={handleMicClick} aria-label={isRecording ? "Stop recording" : "Use microphone"}>
+              {isRecording ? <Square className="h-5 w-5 text-destructive animate-pulse" /> : <Mic className="h-5 w-5 text-muted-foreground hover:text-primary" />}
             </Button>
             <Button variant="ghost" size="icon" onClick={handleSend} aria-label="Send message">
               <Send className="h-5 w-5 text-muted-foreground hover:text-primary" />
