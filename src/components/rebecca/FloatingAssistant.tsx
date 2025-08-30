@@ -16,7 +16,9 @@ export function FloatingAssistant() {
 
   useEffect(() => {
     // Set initial position based on window size, only on client
-    setPosition({ x: 30, y: window.innerHeight - 130 });
+    if (typeof window !== 'undefined') {
+        setPosition({ x: 30, y: window.innerHeight - 130 });
+    }
   }, []);
 
   useEffect(() => {
@@ -77,7 +79,7 @@ export function FloatingAssistant() {
         <div
           className={cn(
             "w-24 h-24 rounded-full bg-card border-4 flex items-center justify-center cursor-pointer transition-all duration-300",
-            isListening ? "border-accent [box-shadow:0_0_20px_theme(colors.accent)]" : "border-primary [box-shadow:0_0_20px_theme(colors.primary)]",
+            isListening ? "border-accent [box-shadow:0_0_20px_hsl(var(--accent))]" : "border-primary [box-shadow:0_0_20px_hsl(var(--primary))]",
           )}
         >
           <Bot className={cn("w-12 h-12 transition-colors", isListening ? "text-accent" : "text-primary")} />
