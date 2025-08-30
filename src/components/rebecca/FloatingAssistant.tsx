@@ -104,7 +104,7 @@ export function FloatingAssistant() {
         >
           <Image src="https://picsum.photos/100/100" width={96} height={96} alt="Rebecca AI Assistant" data-ai-hint="young chinese lady" className="w-full h-full object-cover"/>
           <div className={cn(
-            "absolute bottom-5 w-6 h-1 bg-foreground/80 rounded-full transition-all duration-100",
+            "absolute bottom-5 w-6 h-1 bg-white rounded-full transition-all duration-100",
             isSpeaking ? "h-4" : "h-1"
           )}
             style={{transitionTimingFunction: 'cubic-bezier(0.8, 0, 0.2, 1)'}}
@@ -118,7 +118,7 @@ export function FloatingAssistant() {
           <Move className="w-4 h-4 text-muted-foreground" />
         </div>
          {isListening && (
-          <div className="absolute -top-2 -left-2 p-2 bg-secondary rounded-full">
+          <div className="absolute -top-2 -left-2 p-2 bg-accent/50 rounded-full">
             <Mic className="w-4 h-4 text-accent animate-pulse" />
           </div>
         )}

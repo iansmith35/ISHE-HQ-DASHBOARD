@@ -11,6 +11,8 @@ import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { textToSpeech } from "@/ai/flows/text-to-speech";
 import { useToast } from "@/hooks/use-toast";
+import Image from 'next/image';
+
 
 type Message = {
   id: number;
@@ -38,6 +40,7 @@ export function ChatPanel() {
   ]);
   const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const { toast } = useToast();
@@ -45,6 +48,8 @@ export function ChatPanel() {
   useEffect(() => {
     // Pre-create the audio element
     audioRef.current = new Audio();
+    audioRef.current.onplay = () => setIsSpeaking(true);
+    audioRef.current.onended = () => setIsSpeaking(false);
   }, []);
 
   const playAudio = (audioDataUri: string) => {
@@ -157,17 +162,20 @@ export function ChatPanel() {
                 )}
               >
                 {message.role === "assistant" && (
-                   <Avatar className="w-8 h-8 border-2 border-primary/50">
-                    <AvatarImage src="https://picsum.photos/100/100" data-ai-hint="young chinese lady" />
-                    <AvatarFallback><Bot className="text-primary"/></AvatarFallback>
+                   <Avatar className="w-8 h-8 border-2 border-primary/50 relative overflow-visible">
+                    <Image src="https://picsum.photos/100/100" data-ai-hint="young chinese lady" width={32} height={32} alt="Rebecca AI Assistant" className="rounded-full" />
+                     <div className={cn(
+                        "absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-1 bg-white rounded-full transition-all duration-100",
+                        isSpeaking ? "h-2" : "h-0"
+                     )}
+                        style={{transitionTimingFunction: 'cubic-bezier(0.8, 0, 0.2, 1)'}}
+                     />
                   </Avatar>
                 )}
                 <div
                   className={cn(
                     "max-w-xs md:max-w-md lg:max-w-xl rounded-lg px-4 py-2",
-                    message.role === "user"
-                      ? "bg-primary/20 text-primary-foreground"
-                      : "bg-secondary"
+                     message.role === "user" ? "bg-primary/20" : "bg-secondary"
                   )}
                 >
                   <p className="text-sm">{message.content}</p>
