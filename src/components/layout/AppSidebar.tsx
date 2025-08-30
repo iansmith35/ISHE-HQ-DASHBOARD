@@ -68,20 +68,18 @@ export function AppSidebar() {
         <SidebarMenu>
           {menuItems.map(({ href, label, icon: Icon }) => (
             <SidebarMenuItem key={href}>
-              <Link href={href} passHref legacyBehavior>
-                <SidebarMenuButton
-                  asChild
-                  isActive={pathname === href}
-                  tooltip={{ children: label }}
-                  className="aria-[current=page]:text-primary aria-[current=page]:[text-shadow:0_0_10px_hsl(var(--primary))]"
-                  aria-current={pathname === href ? "page" : undefined}
-                >
-                  <a>
-                    <Icon />
-                    <span>{label}</span>
-                  </a>
-                </SidebarMenuButton>
-              </Link>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === href}
+                tooltip={{ children: label }}
+                className="aria-[current=page]:text-primary aria-[current=page]:[text-shadow:0_0_10px_hsl(var(--primary))]"
+                aria-current={pathname === href ? "page" : undefined}
+              >
+                <Link href={href}>
+                  <Icon />
+                  <span>{label}</span>
+                </Link>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
