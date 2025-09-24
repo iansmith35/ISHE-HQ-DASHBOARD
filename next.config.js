@@ -26,10 +26,14 @@ const nextConfig = {
   devIndicators: {
     position: 'bottom-right',
   },
-  allowedDevOrigins: [
-    'https://*.cloudworkstations.dev',
-    'https://*.firebase.studio',
-  ],
+  webpack: (config, { isServer }) => {
+    // Ignore problematic genkit dependencies that cause build issues
+    config.externals = config.externals || [];
+    if (isServer) {
+      config.externals.push('wav', 'ansi-color');
+    }
+    return config;
+  },
 };
 
 module.exports = nextConfig;
