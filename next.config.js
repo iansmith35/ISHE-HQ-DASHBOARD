@@ -26,10 +26,7 @@ const nextConfig = {
   devIndicators: {
     position: 'bottom-right',
   },
-  allowedDevOrigins: [
-    'https://*.cloudworkstations.dev',
-    'https://*.firebase.studio',
-  ],
+
 };
 
 module.exports = nextConfig;
