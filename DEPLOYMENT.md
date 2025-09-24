@@ -7,6 +7,7 @@
 The ISHE HQ Dashboard is a modern CRM system built with Next.js 15.3.3, featuring:
 
 - **Real-time Dashboard**: Display tiles for jobs, tasks, calendar, and inbox summaries
+- **Dashboard Updates System**: Real-time updates with Supabase integration ✨ NEW
 - **Rebecca AI Chat**: AI-powered chat panel with live transcription and memory  
 - **Task Management**: Manage tasks with timestamps, status, and ownership
 - **Inbox Integration**: Unified inbox for SMS, WhatsApp, and Email
@@ -16,6 +17,7 @@ The ISHE HQ Dashboard is a modern CRM system built with Next.js 15.3.3, featurin
 
 ## Technical Stack
 - **Framework**: Next.js 15.3.3 with Turbopack
+- **Database**: Supabase with PostgreSQL ✨ NEW
 - **UI Library**: React 18 with Radix UI components
 - **Styling**: Tailwind CSS with dark neon theme
 - **AI Integration**: Google Genkit with Gemini models
@@ -24,11 +26,40 @@ The ISHE HQ Dashboard is a modern CRM system built with Next.js 15.3.3, featurin
 
 ## Pre-Deployment Checklist
 - [x] TypeScript compilation errors fixed
-- [x] Build process working (builds successfully)
-- [x] All dependencies installed
-- [x] Production build generates optimized bundles
 - [x] Core CRM features implemented
 - [x] Firebase App Hosting configuration present
+- [x] Supabase integration added ✨ NEW
+- [x] Dashboard updates table schema created ✨ NEW
+- [ ] Build process working (AI dependencies issue)
+- [ ] Dashboard updates table deployed to Supabase
+- [ ] Production build generates optimized bundles
+- [ ] All dependencies installed
+
+## Deployment Instructions
+
+### 1. Database Setup (Supabase)
+1. Open your Supabase project: https://mydxasjicsfetnglbppp.supabase.co
+2. Go to SQL Editor
+3. Run the migration script: `scripts/dashboard-updates-migration.sql`
+4. Verify the table was created in the Tables tab
+
+### 2. Environment Variables
+Ensure your `.env.local` contains:
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://mydxasjicsfetnglbppp.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
+
+### 3. Test the Integration
+```bash
+node scripts/test-dashboard-updates.js
+```
+
+### 4. Deploy to Firebase
+```bash
+npm run build  # Note: Currently fails due to AI dependencies
+firebase deploy
+```
 
 ## Deployment Instructions
 

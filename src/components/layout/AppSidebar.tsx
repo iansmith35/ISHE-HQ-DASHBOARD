@@ -33,6 +33,7 @@ import { cn } from "@/lib/utils";
 
 const menuItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard-demo", label: "Updates Demo", icon: Bot },
   { href: "/rebecca", label: "Rebecca", icon: Bot },
   { href: "/tasks", label: "Tasks", icon: ListChecks },
   { href: "/calendar", label: "Calendar", icon: Calendar },
