@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISHE HQ Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;600&display=swap');
+        
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --background: hsl(224, 71%, 4%);
+            --foreground: hsl(210, 20%, 98%);
+            --card: hsl(225, 60%, 9%);
+            --card-foreground: hsl(210, 20%, 98%);
+            --primary: hsl(198, 93%, 60%);
+            --primary-foreground: hsl(198, 93%, 10%);
+            --secondary: hsl(220, 40%, 12%);
+            --secondary-foreground: hsl(210, 20%, 98%);
+            --muted: hsl(220, 40%, 12%);
+            --muted-foreground: hsl(240, 5%, 65%);
+            --accent: hsl(310, 90%, 60%);
+            --accent-foreground: hsl(310, 90%, 10%);
+            --destructive: hsl(0, 72%, 51%);
+            --border: hsl(220, 40%, 15%);
+            --input: hsl(220, 40%, 15%);
+            --ring: hsl(198, 93%, 60%);
+            --green: hsl(142, 76%, 36%);
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        /* Utility classes */
+        .flex { display: flex; }
+        .flex-1 { flex: 1; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-end { justify-content: flex-end; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        
+        .min-h-screen { min-height: 100vh; }
+        .h-5 { height: 1.25rem; }
+        .h-8 { height: 2rem; }
+        .h-10 { height: 2.5rem; }
+        .h-12 { height: 3rem; }
+        .h-16 { height: 4rem; }
+        .h-24 { height: 6rem; }
+        .h-full { height: 100%; }
+        .w-5 { width: 1.25rem; }
+        .w-8 { width: 2rem; }
+        .w-10 { width: 2.5rem; }
+        .w-12 { width: 3rem; }
+        .w-24 { width: 6rem; }
+        .w-full { width: 100%; }
+        .max-w-lg { max-width: 32rem; }
+        .max-w-4xl { max-width: 56rem; }
+        
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .pb-2 { padding-bottom: 0.5rem; }
+        .pb-4 { padding-bottom: 1rem; }
+        .mr-3 { margin-right: 0.75rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        
+        .space-y-1 > * + * { margin-top: 0.25rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+        
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .col-span-2 { grid-column: span 2 / span 2; }
+        
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-full { border-radius: 9999px; }
+        .border { border-width: 1px; }
+        .border-2 { border-width: 2px; }
+        .border-b { border-bottom-width: 1px; }
+        .border-r { border-right-width: 1px; }
+        .border-t { border-top-width: 1px; }
+        
+        .bg-card { background-color: var(--card); }
+        .bg-card\/80 { background-color: hsl(225, 60%, 9%, 0.8); }
+        .bg-secondary { background-color: var(--secondary); }
+        .bg-secondary\/50 { background-color: hsl(220, 40%, 12%, 0.5); }
+        .bg-primary { background-color: var(--primary); }
+        .bg-primary\/20 { background-color: hsl(198, 93%, 60%, 0.2); }
+        .bg-accent\/20 { background-color: hsl(310, 90%, 60%, 0.2); }
+        .bg-accent\/30 { background-color: hsl(310, 90%, 60%, 0.3); }
+        .bg-accent { background-color: var(--accent); }
+        .bg-input { background-color: var(--input); }
+        .bg-green-500 { background-color: hsl(142, 76%, 36%); }
+        
+        .text-foreground { color: var(--foreground); }
+        .text-primary { color: var(--primary); }
+        .text-primary-foreground { color: var(--primary-foreground); }
+        .text-accent { color: var(--accent); }
+        .text-muted-foreground { color: var(--muted-foreground); }
+        .text-destructive { color: var(--destructive); }
+        .text-green-400 { color: hsl(142, 76%, 56%); }
+        .text-white { color: white; }
+        
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+        
+        .border-border { border-color: var(--border); }
+        .border-border\/60 { border-color: hsl(220, 40%, 15%, 0.6); }
+        .border-primary\/50 { border-color: hsl(198, 93%, 60%, 0.5); }
+        .border-accent\/50 { border-color: hsl(310, 90%, 60%, 0.5); }
+        .border-accent { border-color: var(--accent); }
+        
+        .transition-colors { transition: color 0.15s, background-color 0.15s, border-color 0.15s; }
+        .transition-all { transition: all 0.3s ease; }
+        .duration-300 { transition-duration: 300ms; }
+        
+        .hover\:bg-secondary:hover { background-color: var(--secondary); }
+        .hover\:bg-primary\/80:hover { background-color: hsl(198, 93%, 60%, 0.8); }
+        .hover\:bg-accent\/30:hover { background-color: hsl(310, 90%, 60%, 0.3); }
+        .hover\:border-primary\/80:hover { border-color: hsl(198, 93%, 60%, 0.8); }
+        .hover\:border-accent\/80:hover { border-color: hsl(310, 90%, 60%, 0.8); }
+        .hover\:border-accent:hover { border-color: var(--accent); }
+        .hover\:scale-110:hover { transform: scale(1.1); }
+        
+        .focus\:outline-none:focus { outline: none; }
+        .focus\:ring-2:focus { box-shadow: 0 0 0 2px var(--ring); }
+        .focus\:ring-primary:focus { box-shadow: 0 0 0 2px var(--primary); }
+        
+        .backdrop-blur-sm { backdrop-filter: blur(4px); }
+        .sticky { position: sticky; }
+        .top-0 { top: 0; }
+        .z-10 { z-index: 10; }
+        .fixed { position: fixed; }
+        .bottom-20 { bottom: 5rem; }
+        .right-20 { right: 5rem; }
+        
+        .overflow-hidden { overflow: hidden; }
+        .overflow-y-auto { overflow-y: auto; }
+        
+        .cursor-pointer { cursor: pointer; }
+        .cursor-move { cursor: move; }
+        
+        .text-left { text-align: left; }
+        .text-center { text-align: center; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        
+        /* Responsive design */
+        @media (min-width: 768px) {
+            .md\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md\:hidden { display: none; }
+        }
+        
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .lg\:col-span-2 { grid-column: span 2 / span 2; }
+        }
+        
+        @media (min-width: 1280px) {
+            .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .xl\:col-span-1 { grid-column: span 1 / span 1; }
+        }
+
+        /* Custom styles */
+        .neon-text {
+            text-shadow: 0 0 8px var(--primary);
+        }
+        .neon-border {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+        .sidebar-collapsed {
+            width: 4rem;
+        }
+        .sidebar-expanded {
+            width: 16rem;
+        }
+        .sidebar-transition {
+            transition: width 0.3s ease-in-out;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes pulse-neon {
+            0%, 100% { 
+                box-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent), 0 0 15px var(--accent);
+            }
+            50% { 
+                box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent);
+            }
+        }
+        .pulse-neon {
+            animation: pulse-neon 2s infinite;
+        }
+        .floating-assistant {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, var(--accent), hsl(310, 90%, 40%));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .floating-assistant:hover {
+            transform: scale(1.1);
+        }
+        
+        input::placeholder {
+            color: var(--muted-foreground);
+        }
+        
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        
+        .nav-item {
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: var(--primary);
+            text-shadow: 0 0 8px var(--primary);
+        }
+    </style>
+    <style>
+        .neon-text {
+            text-shadow: 0 0 8px hsl(198, 93%, 60%);
+        }
+        .neon-border {
+            border-color: hsl(198, 93%, 60%);
+            box-shadow: 0 0 10px hsl(198, 93%, 60%);
+        }
+        .sidebar-collapsed {
+            width: 4rem;
+        }
+        .sidebar-expanded {
+            width: 16rem;
+        }
+        .sidebar-transition {
+            transition: width 0.3s ease-in-out;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes pulse-neon {
+            0%, 100% { 
+                box-shadow: 0 0 5px hsl(310, 90%, 60%), 0 0 10px hsl(310, 90%, 60%), 0 0 15px hsl(310, 90%, 60%);
+            }
+            50% { 
+                box-shadow: 0 0 10px hsl(310, 90%, 60%), 0 0 20px hsl(310, 90%, 60%), 0 0 30px hsl(310, 90%, 60%);
+            }
+        }
+        .pulse-neon {
+            animation: pulse-neon 2s infinite;
+        }
+        .floating-assistant {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, hsl(310, 90%, 60%), hsl(310, 90%, 40%));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .floating-assistant:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground font-body min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-expanded sidebar-transition bg-card border-r border-border flex flex-col">
+            <!-- Sidebar Header -->
+            <div class="h-16 flex items-center justify-between p-2">
+                <a href="#" class="flex items-center gap-2" onclick="showTab('dashboard')">
+                    <svg class="w-8 h-8 text-primary neon-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="font-bold text-lg text-primary neon-text sidebar-text">ISHE HQ</span>
+                </a>
+            </div>
+            
+            <!-- Sidebar Menu -->
+            <nav class="flex-1 p-2">
+                <ul class="space-y-1">
+                    <li>
+                        <button onclick="showTab('dashboard')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="dashboard">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+                            </svg>
+                            <span class="sidebar-text">Dashboard</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showTab('rebecca')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="rebecca">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="sidebar-text">Rebecca</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showTab('tasks')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="tasks">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                            </svg>
+                            <span class="sidebar-text">Tasks</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showTab('calendar')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="calendar">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v14a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="sidebar-text">Calendar</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showTab('inbox')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="inbox">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0l-3.5-3.5a2 2 0 00-1.414-.586H8.914a2 2 0 00-1.414.586L4 13"/>
+                            </svg>
+                            <span class="sidebar-text">Inbox</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showTab('customers')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="customers">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                            </svg>
+                            <span class="sidebar-text">Customers</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showTab('jobs')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="jobs">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 002 2h2a2 2 0 002-2V8a2 2 0 00-2-2h-2z"/>
+                            </svg>
+                            <span class="sidebar-text">Jobs</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showTab('vault')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="vault">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                            </svg>
+                            <span class="sidebar-text">Vault</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showTab('media')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="media">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="sidebar-text">Media</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="showTab('settings')" class="nav-item w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-secondary transition-colors" data-tab="settings">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span class="sidebar-text">Settings</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Sidebar Footer -->
+            <div class="p-2">
+                <button onclick="toggleSidebar()" class="w-full flex items-center justify-center p-3 rounded-lg hover:bg-secondary transition-colors">
+                    <svg id="sidebar-toggle-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                    </svg>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col min-h-screen">
+            <!-- Header -->
+            <header class="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-sm px-4 md:px-6">
+                <h1 id="page-title" class="flex-1 text-xl font-semibold tracking-wider text-primary neon-text">Dashboard</h1>
+                <div class="relative">
+                    <button class="relative h-10 w-10 rounded-full border-2 border-primary/50 bg-secondary">
+                        <span class="text-sm font-bold">IH</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main id="dashboard" class="tab-content active flex-1 overflow-y-auto p-6 space-y-6">
+                <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <!-- Today's Jobs -->
+                    <div class="bg-card/80 backdrop-blur-sm border border-border/60 hover:border-primary/80 transition-colors duration-300 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-muted-foreground">Today's Jobs</h3>
+                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0H8m8 0v2a2 2 0 002 2h2a2 2 0 002-2V8a2 2 0 00-2-2h-2z"/>
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-bold text-foreground">3</div>
+                        <p class="text-xs text-muted-foreground">3 new jobs scheduled.</p>
+                    </div>
+
+                    <!-- Overdue Tasks -->
+                    <div class="bg-card/80 backdrop-blur-sm border border-border/60 hover:border-primary/80 transition-colors duration-300 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-muted-foreground">Overdue Tasks</h3>
+                            <svg class="w-5 h-5 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-bold text-foreground">5</div>
+                        <p class="text-xs text-muted-foreground">5 tasks are overdue.</p>
+                    </div>
+
+                    <!-- Calendar Agenda -->
+                    <div class="bg-card/80 backdrop-blur-sm border border-border/60 hover:border-primary/80 transition-colors duration-300 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-muted-foreground">Calendar Agenda</h3>
+                            <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-muted-foreground">Next meeting at 2 PM.</p>
+                    </div>
+
+                    <!-- Inbox Summary -->
+                    <div class="bg-card/80 backdrop-blur-sm border border-border/60 hover:border-primary/80 transition-colors duration-300 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-muted-foreground">Inbox Summary</h3>
+                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0l-3.5-3.5a2 2 0 00-1.414-.586H8.914a2 2 0 00-1.414.586L4 13"/>
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-bold text-foreground">12</div>
+                        <p class="text-xs text-muted-foreground">12 unread messages.</p>
+                    </div>
+
+                    <!-- QuickBooks Balances -->
+                    <div class="bg-card/80 backdrop-blur-sm border border-border/60 hover:border-primary/80 transition-colors duration-300 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-muted-foreground">QuickBooks Balances</h3>
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-bold text-foreground">$12,345</div>
+                        <p class="text-xs text-muted-foreground">Balances are up to date.</p>
+                    </div>
+
+                    <!-- Rebecca Status -->
+                    <div class="bg-card/80 backdrop-blur-sm border border-border/60 hover:border-primary/80 transition-colors duration-300 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-muted-foreground">Rebecca Status</h3>
+                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div class="text-2xl font-bold text-foreground">Active</div>
+                        <p class="text-xs text-muted-foreground">Online and ready.</p>
+                    </div>
+
+                    <!-- Live Speech Mic -->
+                    <div class="lg:col-span-2 xl:col-span-1 bg-card/80 backdrop-blur-sm border border-border/60 hover:border-accent/80 transition-colors duration-300 rounded-lg p-6 flex flex-col items-center justify-center">
+                        <h3 class="text-lg font-medium text-center mb-4">Live Speech Mic</h3>
+                        <button onclick="toggleVoiceRecording()" id="voice-button" class="w-24 h-24 rounded-full bg-accent/20 hover:bg-accent/30 text-accent border-2 border-accent/50 hover:border-accent transition-all duration-300 flex items-center justify-center">
+                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg p-6">
+                    <h2 class="text-lg font-semibold mb-4">Recent Activity</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div>
+                                <p class="font-medium">New job scheduled: "Gas Certificate Check"</p>
+                                <p class="text-sm text-muted-foreground">Assigned to Ian</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0l-3.5-3.5a2 2 0 00-1.414-.586H8.914a2 2 0 00-1.414.586L4 13"/>
+                            </svg>
+                            <div>
+                                <p class="font-medium">New SMS from +447123456789</p>
+                                <p class="text-sm text-muted-foreground">"Hi, can you give me a quote for..."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Rebecca Chat Content -->
+            <main id="rebecca" class="tab-content flex-1 p-6">
+                <div class="max-w-4xl mx-auto h-full">
+                    <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg h-full flex flex-col">
+                        <div class="border-b border-border/60 p-6">
+                            <h2 class="text-lg font-semibold">Conversation with Rebecca</h2>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-6">
+                            <div id="chat-messages" class="space-y-6">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1 bg-secondary/50 rounded-lg p-4">
+                                        <p>Hello! I'm Rebecca. How can I assist you today?</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 justify-end">
+                                    <div class="flex-1 bg-primary/20 rounded-lg p-4 max-w-lg">
+                                        <p>What are my overdue tasks?</p>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                                        <span class="text-xs font-bold">IH</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1 bg-secondary/50 rounded-lg p-4">
+                                        <p>You have 5 overdue tasks. The most critical one is 'Finalize Q2 report', which was due 3 days ago.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-t border-border/60 p-6">
+                            <div class="flex gap-4">
+                                <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 bg-input border border-border rounded-lg px-4 py-2 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+                                <button onclick="sendMessage()" class="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-2 rounded-lg font-medium transition-colors">
+                                    Send
+                                </button>
+                                <button onclick="toggleVoiceRecording()" id="chat-voice-button" class="bg-accent/20 hover:bg-accent/30 text-accent border border-accent/50 px-4 py-2 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Other Tab Contents -->
+            <main id="tasks" class="tab-content flex-1 p-6">
+                <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Tasks & Diary</h2>
+                    <p class="text-muted-foreground">Your tasks and schedule will appear here.</p>
+                </div>
+            </main>
+
+            <main id="calendar" class="tab-content flex-1 p-6">
+                <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Calendar</h2>
+                    <p class="text-muted-foreground">Your calendar events will appear here.</p>
+                </div>
+            </main>
+
+            <main id="inbox" class="tab-content flex-1 p-6">
+                <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Inbox</h2>
+                    <div class="space-y-4">
+                        <div class="border-b border-border/60 pb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                                    <span class="text-xs font-bold">JD</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium">John Doe</p>
+                                    <p class="text-sm text-muted-foreground">SMS: Can you confirm our appointment?</p>
+                                </div>
+                                <span class="text-xs text-muted-foreground">2 unread</span>
+                            </div>
+                        </div>
+                        <div class="border-b border-border/60 pb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.109"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-medium">EventSafe</p>
+                                    <p class="text-sm text-muted-foreground">WhatsApp: Great, see you there!</p>
+                                </div>
+                                <span class="text-xs text-muted-foreground">1 unread</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <main id="customers" class="tab-content flex-1 p-6">
+                <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Customers</h2>
+                    <p class="text-muted-foreground">Customer management will appear here.</p>
+                </div>
+            </main>
+
+            <main id="jobs" class="tab-content flex-1 p-6">
+                <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Jobs</h2>
+                    <p class="text-muted-foreground">Job management will appear here.</p>
+                </div>
+            </main>
+
+            <main id="vault" class="tab-content flex-1 p-6">
+                <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Vault</h2>
+                    <p class="text-muted-foreground">File vault will appear here.</p>
+                </div>
+            </main>
+
+            <main id="media" class="tab-content flex-1 p-6">
+                <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Media Generation</h2>
+                    <p class="text-muted-foreground">AI media generation will appear here.</p>
+                </div>
+            </main>
+
+            <main id="settings" class="tab-content flex-1 p-6">
+                <div class="bg-card/80 backdrop-blur-sm border border-border/60 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Settings</h2>
+                    <p class="text-muted-foreground">Application settings will appear here.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Floating Assistant -->
+    <div class="floating-assistant pulse-neon" id="floating-assistant" draggable="true">
+        <div class="text-white font-bold text-lg">R</div>
+    </div>
+
+    <script>
+        // State management
+        let isRecording = false;
+        let recognition = null;
+        let currentTab = 'dashboard';
+
+        // Initialize Speech Recognition
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = function(event) {
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                
+                if (finalTranscript) {
+                    if (currentTab === 'rebecca') {
+                        document.getElementById('chat-input').value = finalTranscript;
+                        setTimeout(() => sendMessage(), 500);
+                    } else {
+                        // Handle voice command for dashboard
+                        handleVoiceCommand(finalTranscript);
+                    }
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+                stopRecording();
+            };
+
+            recognition.onend = function() {
+                stopRecording();
+            };
+        }
+
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('text-primary', 'neon-text');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Update page title
+            const titles = {
+                dashboard: 'Dashboard',
+                rebecca: 'Rebecca',
+                tasks: 'Tasks & Diary',
+                calendar: 'Calendar',
+                inbox: 'Inbox',
+                customers: 'Customers',
+                jobs: 'Jobs',
+                vault: 'Vault',
+                media: 'Media Generation',
+                settings: 'Settings'
+            };
+            document.getElementById('page-title').textContent = titles[tabName] || tabName;
+            
+            // Update active nav item
+            const navItem = document.querySelector(`[data-tab="${tabName}"]`);
+            if (navItem) {
+                navItem.classList.add('text-primary', 'neon-text');
+            }
+            
+            currentTab = tabName;
+        }
+
+        // Sidebar toggle functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleIcon = document.getElementById('sidebar-toggle-icon');
+            const sidebarTexts = document.querySelectorAll('.sidebar-text');
+            
+            if (sidebar.classList.contains('sidebar-expanded')) {
+                sidebar.classList.remove('sidebar-expanded');
+                sidebar.classList.add('sidebar-collapsed');
+                toggleIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>';
+                sidebarTexts.forEach(text => text.style.display = 'none');
+            } else {
+                sidebar.classList.remove('sidebar-collapsed');
+                sidebar.classList.add('sidebar-expanded');
+                toggleIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>';
+                sidebarTexts.forEach(text => text.style.display = 'block');
+            }
+        }
+
+        // Voice recording functionality
+        function toggleVoiceRecording() {
+            if (!recognition) {
+                alert('Speech recognition is not supported in this browser. Please use Chrome or Safari.');
+                return;
+            }
+
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        function startRecording() {
+            isRecording = true;
+            recognition.start();
+            
+            // Update UI
+            const voiceButton = document.getElementById('voice-button');
+            const chatVoiceButton = document.getElementById('chat-voice-button');
+            
+            if (voiceButton) {
+                voiceButton.classList.add('pulse-neon');
+                voiceButton.innerHTML = '<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>';
+            }
+            
+            if (chatVoiceButton) {
+                chatVoiceButton.classList.add('pulse-neon');
+            }
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            // Update UI
+            const voiceButton = document.getElementById('voice-button');
+            const chatVoiceButton = document.getElementById('chat-voice-button');
+            
+            if (voiceButton) {
+                voiceButton.classList.remove('pulse-neon');
+                voiceButton.innerHTML = '<svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>';
+            }
+            
+            if (chatVoiceButton) {
+                chatVoiceButton.classList.remove('pulse-neon');
+            }
+        }
+
+        // Handle voice commands
+        function handleVoiceCommand(command) {
+            const lowerCommand = command.toLowerCase();
+            
+            if (lowerCommand.includes('dashboard')) {
+                showTab('dashboard');
+            } else if (lowerCommand.includes('rebecca') || lowerCommand.includes('chat')) {
+                showTab('rebecca');
+            } else if (lowerCommand.includes('task')) {
+                showTab('tasks');
+            } else if (lowerCommand.includes('calendar')) {
+                showTab('calendar');
+            } else if (lowerCommand.includes('inbox') || lowerCommand.includes('message')) {
+                showTab('inbox');
+            } else if (lowerCommand.includes('customer')) {
+                showTab('customers');
+            } else if (lowerCommand.includes('job')) {
+                showTab('jobs');
+            } else if (lowerCommand.includes('vault') || lowerCommand.includes('file')) {
+                showTab('vault');
+            } else if (lowerCommand.includes('media')) {
+                showTab('media');
+            } else if (lowerCommand.includes('setting')) {
+                showTab('settings');
+            } else {
+                // If no specific tab command, show Rebecca and send the command as a message
+                showTab('rebecca');
+                document.getElementById('chat-input').value = command;
+                setTimeout(() => sendMessage(), 500);
+            }
+        }
+
+        // Chat functionality
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addChatMessage(message, 'user');
+            
+            // Clear input
+            input.value = '';
+            
+            // Simulate Rebecca's response
+            setTimeout(() => {
+                let response = "I understand you're asking about: " + message + ". As a static demo, I can't provide real responses, but in the full version I would analyze your request and provide helpful assistance with your tasks, schedule, and business operations.";
+                
+                // Smart responses based on keywords
+                if (message.toLowerCase().includes('task')) {
+                    response = "I can help you manage your tasks. You currently have 5 overdue tasks that need attention. Would you like me to show you the details or help prioritize them?";
+                } else if (message.toLowerCase().includes('job')) {
+                    response = "You have 3 jobs scheduled for today. The next one is the Gas Certificate Check assigned to Ian. Would you like me to show you the full schedule?";
+                } else if (message.toLowerCase().includes('whatsapp') || message.toLowerCase().includes('message')) {
+                    response = "I can help you with WhatsApp integration. You have 1 unread WhatsApp message from EventSafe. Would you like me to show you the conversation or help you draft a reply?";
+                }
+                
+                addChatMessage(response, 'assistant');
+            }, 1000);
+        }
+
+        function addChatMessage(message, role) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            
+            if (role === 'user') {
+                messageDiv.className = 'flex items-start gap-3 justify-end';
+                messageDiv.innerHTML = `
+                    <div class="flex-1 bg-primary/20 rounded-lg p-4 max-w-lg">
+                        <p>${message}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                        <span class="text-xs font-bold">IH</span>
+                    </div>
+                `;
+            } else {
+                messageDiv.className = 'flex items-start gap-3';
+                messageDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 bg-secondary/50 rounded-lg p-4">
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Floating assistant drag functionality
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        const floatingAssistant = document.getElementById('floating-assistant');
+
+        floatingAssistant.addEventListener('dragstart', dragStart);
+        floatingAssistant.addEventListener('dragend', dragEnd);
+        document.addEventListener('dragover', dragOver);
+        document.addEventListener('drop', drop);
+
+        function dragStart(e) {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+            isDragging = true;
+        }
+
+        function dragEnd(e) {
+            initialX = currentX;
+            initialY = currentY;
+            isDragging = false;
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            if (isDragging) {
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                xOffset = currentX;
+                yOffset = currentY;
+                floatingAssistant.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+            }
+        }
+
+        function drop(e) {
+            e.preventDefault();
+        }
+
+        // Click floating assistant to go to Rebecca
+        floatingAssistant.addEventListener('click', () => {
+            showTab('rebecca');
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial active tab
+            showTab('dashboard');
+            
+            // Add enter key support for chat
+            document.getElementById('chat-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+
+        // WhatsApp integration stub
+        function openWhatsApp(number, message) {
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${number}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Add some demo WhatsApp functionality
+        function demoWhatsAppIntegration() {
+            // This would typically connect to WhatsApp Business API
+            console.log('WhatsApp integration stub - ready for implementation');
+            
+            // Example: Send a message
+            // openWhatsApp('447123456789', 'Hello from ISHE HQ Dashboard!');
+        }
+
+        // Initialize WhatsApp stub
+        demoWhatsAppIntegration();
+    </script>
+</body>
+</html>
